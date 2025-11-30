@@ -1,68 +1,48 @@
 # NixOS Configuration Copilot Instructions
 
-## Project Context
+## Project Structure & Architecture
 
-This repository manages the NixOS configuration for the `yuki-desktop` system using **Nix Flakes** and **Home Manager**. The system targets the `nixos-25.05` channel.
-
-## Architecture & File Structure
-
--   **Entry Point**: `flake.nix`
-    -   Defines inputs: `nixpkgs`, `home-manager`, `daeuniverse`, `catppuccin`.
-    -   Outputs `nixosConfigurations.yuki-desktop`.
-    -   Integrates Home Manager as a NixOS module (`home-manager.nixosModules.home-manager`).
--   **System Configuration**: `hosts/yuki-desktop/default.nix`
-    -   Defines system-level services (Boot, Network, Audio, Desktop).
-    -   Imports `hardware-configuration.nix` (located in the same directory).
-    -   Imports overlays from `overlays/`.
--   **User Configuration**: `home/yuki/default.nix`
-    -   Managed via Home Manager module within `flake.nix`.
-    -   Handles user packages (VS Code, Browsers, Chat apps).
-    -   Receives flake inputs via `home-manager.extraSpecialArgs`.
--   **Modules & Overlays**:
-    -   `overlays/`: Contains nixpkgs overlays (e.g., `librime.nix`).
-    -   `modules/`: Reusable NixOS (`modules/nixos`) and Home Manager (`modules/home-manager`) modules.
-    -   `pkgs/`: Custom package definitions.
+-   **Core**: Flake-based NixOS configuration targeting `nixos-25.05`.
+-   **Entry Point**: `flake.nix` defines inputs (`nixpkgs`, `home-manager`, `daeuniverse`) and the `yuki-desktop` system.
+-   **System Config**: `hosts/yuki-desktop/default.nix` manages system-level settings (boot, networking, hardware, desktop environment).
+-   **User Config**: `home/yuki/default.nix` manages user-level settings (VS Code, git, browsers) via Home Manager as a NixOS module.
+-   **Overlays**: Located in `overlays/`, imported globally in `hosts/yuki-desktop/default.nix`.
 
 ## Critical Workflows
 
--   **Apply Configuration**:
-    1.  Sync configuration to `/etc/nixos` (validates build first):
-        ```bash
-        ./deploy.sh
-        ```
-    2.  Apply the configuration:
-        ```bash
-        sudo nixos-rebuild switch --flake .#yuki-desktop
-        ```
--   **Update Flake Inputs**:
+### Deployment Cycle
+
+**NEVER** edit `/etc/nixos` directly. Always edit this repository.
+
+1.  **Sync & Validate**: Run `./deploy.sh`.
+    -   Performs a dry-run build (`nixos-rebuild build`) in a temp directory.
+    -   Syncs files to `/etc/nixos` using `rsync` (excluding `.git`, `result`).
+2.  **Apply**:
     ```bash
-    nix flake update
-    ```
--   **Format Code**:
-    Use `nixfmt` (specifically `nixfmt-rfc-style` is installed):
-    ```bash
-    nixfmt .
+    sudo nixos-rebuild switch --flake .#yuki-desktop
     ```
 
-## Coding Conventions & Patterns
+### Package Management
 
--   **Package Management**:
-    -   Prefer `with pkgs; [ ... ]` for concise package lists.
-    -   VS Code extensions are managed declaratively in `home/yuki/default.nix` under `programs.vscode.profiles.default.extensions`.
--   **Overlays**:
-    -   Define overlays in separate files under `overlays/` (e.g., `overlays/librime.nix`).
-    -   Import them in `hosts/<host>/default.nix` or `flake.nix` rather than defining them inline.
--   **Hardware & Services**:
-    -   **Proxy**: Uses `daed` service from `daeuniverse` input.
-    -   **Desktop**: KDE Plasma 6 (`services.desktopManager.plasma6`).
-    -   **Audio**: PipeWire enabled, PulseAudio disabled.
-    -   **Input Method**: Fcitx5 + Rime (customized via overlay).
+-   **System-wide**: Add to `environment.systemPackages` in `hosts/yuki-desktop/default.nix`.
+-   **User-specific**: Add to `home.packages` in `home/yuki/default.nix`.
+-   **VS Code Extensions**: Managed declaratively in `home/yuki/default.nix` under `programs.vscode.profiles.default.extensions`.
 
-## Integration Details
+## Project-Specific Conventions
 
--   **Home Manager**:
-    -   Configured with `useGlobalPkgs = true` and `useUserPackages = true`.
-    -   User `yuki` configuration is imported directly in `flake.nix`.
--   **External Flakes**:
-    -   `daeuniverse`: Provides `daed` module.
-    -   `catppuccin`: Provides theming modules.
+-   **Proxy/Network**:
+    -   Uses `daed` (with web dashboard) from `daeuniverse` flake input.
+    -   Service defined in `hosts/yuki-desktop/default.nix` (`services.daed`).
+    -   Firewall ports 12345 are opened for it.
+-   **Hardware**:
+    -   Includes specific support for RGB/Cooling: `openrgb`, `liquidctl`, `coolercontrol`.
+    -   Windows drive mounted at `/mnt/windows` (NTFS).
+-   **Formatting**: Use `nixfmt` (specifically `nixfmt-rfc-style`).
+-   **Secrets**: Stored in `secrets/` (e.g., `secrets/dae/boostnet.txt`), read via `builtins.readFile`.
+
+## Key File Locations
+
+-   `flake.nix`: Inputs and outputs definition.
+-   `hosts/yuki-desktop/default.nix`: Main system configuration.
+-   `home/yuki/default.nix`: Main user configuration.
+-   `deploy.sh`: Deployment script.

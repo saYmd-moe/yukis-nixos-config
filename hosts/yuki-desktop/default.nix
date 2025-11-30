@@ -6,11 +6,17 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
+    # 导入硬件扫描配置
     ./hardware-configuration.nix
   ];
 
-  # Mount Windows drive
+  ################################################################################
+  #
+  #  文件系统与存储
+  #
+  ################################################################################
+
+  # 挂载 Windows NTFS 分区
   fileSystems."/mnt/windows" = {
     device = "/dev/disk/by-uuid/EA9572B0D459FB63";
     fsType = "ntfs3";
@@ -24,29 +30,47 @@
     ];
   };
 
-  # Bootloader.
+  ################################################################################
+  #
+  #  系统引导与内核
+  #
+  ################################################################################
+
+  # 启用 systemd-boot 引导加载程序
   boot.loader.systemd-boot.enable = true;
-  #boot.loader.efi.canTouchEfiVariables = true;
-  # 指定 EFI 挂载点 (通常默认就是 /boot，显式写出来更保险)
+
+  # EFI 配置
+  # boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot";
-  # 安装 refind 包，以便我们可以运行 refind-install 命令
-  # Use latest kernel.
+
+  # 使用最新的 Linux 内核
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = "yuki-desktop"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  ################################################################################
+  #
+  #  网络配置
+  #
+  ################################################################################
 
-  # Configure network proxy if necessary
+  networking.hostName = "yuki-desktop"; # 主机名
+
+  # 启用 NetworkManager 网络管理工具
+  networking.networkmanager.enable = true;
+
+  # 代理设置 (如有需要可取消注释)
   #networking.proxy.default = "http://192.168.31.157:2080";
   #networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  ################################################################################
+  #
+  #  本地化与时区
+  #
+  ################################################################################
 
-  # Set your time zone.
+  # 时区设置
   time.timeZone = "Asia/Shanghai";
 
-  # Select internationalisation properties.
+  # 语言环境设置
   i18n.defaultLocale = "zh_CN.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -61,27 +85,50 @@
     LC_TIME = "zh_CN.UTF-8";
   };
 
-  # Enable the X11 windowing system.
-  # You can disable this if you're only using the Wayland session.
+  ################################################################################
+  #
+  #  桌面环境 (KDE Plasma)
+  #
+  ################################################################################
+
+  # 启用 X11 显示服务
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
+  # 启用 SDDM 显示管理器和 Plasma 6 桌面环境
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
-  # Configure keymap in X11
+  # X11 键盘映射
   services.xserver.xkb = {
     layout = "cn";
     variant = "";
   };
 
-  # Enable CUPS to print documents.
+  # 启用触摸板支持
+  # services.xserver.libinput.enable = true;
+
+  ################################################################################
+  #
+  #  硬件服务 (打印/散热/RGB)
+  #
+  ################################################################################
+
+  # 打印服务 (CUPS)
   services.printing.enable = true;
 
-  # Enable fan control
+  # 风扇控制 (CoolerControl)
   programs.coolercontrol.enable = true;
 
-  # Enable sound with pipewire.
+  # OpenRGB 灯光控制
+  services.hardware.openrgb.enable = true;
+
+  ################################################################################
+  #
+  #  音频服务 (PipeWire)
+  #
+  ################################################################################
+
+  # 禁用 PulseAudio，使用 PipeWire 替代
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -89,18 +136,16 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
+    # 如果需要 JACK 支持，请取消注释
     jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  ################################################################################
+  #
+  #  用户配置
+  #
+  ################################################################################
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.yuki = {
     isNormalUser = true;
     description = "MercuryMoe";
@@ -109,103 +154,100 @@
       "wheel"
     ];
     packages = with pkgs; [
+      # 系统级用户软件 (建议在 home-manager 中管理)
       #kdePackages.kate
       #thunderbird
     ];
   };
+
+  # 允许 wheel 组用户免密 sudo
   security.sudo.wheelNeedsPassword = false;
 
-  # Allow unfree packages
+  ################################################################################
+  #
+  #  系统软件包与环境
+  #
+  ################################################################################
+
+  # 允许非自由软件 (Unfree)
   nixpkgs.config.allowUnfree = true;
+
+  # 导入 Overlays
   nixpkgs.overlays = import ../../overlays;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # 启用实验性功能 (Flakes)
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
+
+  # 系统级软件包
   environment.systemPackages = with pkgs; [
-    # 命令行工具
+    # --- 核心工具 ---
     vim
     wget
     git
     fish
     refind
-    nixfmt-rfc-style # Nix 代码格式化工具
+    nixfmt-rfc-style # Nix 代码格式化
 
-    # 透明代理
-    #dae
-
-    # 美化
+    # --- 美化 ---
     papirus-icon-theme
 
-    # 主板传感器和水冷支持
+    # --- 硬件监控与控制 ---
     lm_sensors
     liquidctl
     openrgb-with-all-plugins
   ];
 
-  # Steam 配置
+  # 默认编辑器
+  environment.variables.EDITOR = "vim";
+
+  ################################################################################
+  #
+  #  游戏与娱乐 (Steam)
+  #
+  ################################################################################
+
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    remotePlay.openFirewall = true; # 开放远程畅玩端口
+    dedicatedServer.openFirewall = true; # 开放专用服务器端口
+    localNetworkGameTransfers.openFirewall = true; # 开放局域网传输端口
   };
-  # Link Steam library from Windows drive
+
+  # 链接 Windows 盘的 Steam 库
   systemd.tmpfiles.rules = [
     "d /home/yuki/.local/share/Steam 0755 yuki users -"
     "d /home/yuki/.local/share/Steam/steamapps 0755 yuki users -"
     "d /home/yuki/.local/share/Steam/steamapps/common 0755 yuki users -"
   ];
 
-  #TODO dae 配置问题仍然解决不了，目前推测是因为筛选器的问题 filter，暂时切换回 daed
-  # dae - declarative configuration
-  # 组合并复制 dae 配置文件
-  #environment.etc."dae/config.dae" = {
-  #  text =
-  #    builtins.readFile ../../secrets/dae/dae-subscription.dae
-  #    + "\n"
-  #    + builtins.readFile ./dae/config.dae;
-  #  mode = "0600";
-  #};
-  #environment.etc."dae/boostnet.sub" = {
-  #  text = builtins.readFile ../../secrets/dae/boostnet.txt;
-  #};
+  ################################################################################
+  #
+  #  网络代理 (Daed)
+  #
+  ################################################################################
 
-  #services.dae = {
-  #  enable = true;
-  #  configFile = "/etc/dae/config.dae";
-  #  openFirewall = {
-  #    enable = true;
-  #    port = 12345;
-  #  };
-
-  #assets = with pkgs; [
-  #  v2ray-geoip
-  #  v2ray-domain-list-community
-  #];
-
-  # alternative of `assets`, a dir contains geo database.
-  #assetsPath = "/etc/dae";
-  #};
-
-  # daed - dae with a web dashboard (Optional: disable if using dae directly)
+  # Daed: 带 Web 管理面板的透明代理工具
   services.daed = {
     enable = true;
     openFirewall = {
       enable = true;
-      port = 12345;
+      port = 12345; # Web 面板端口
     };
   };
 
-  services.hardware.openrgb.enable = true;
+  # (已注释) Dae 纯配置模式备份
+  #services.dae = { ... };
 
-  # System Environment
-  environment.variables.EDITOR = "vim";
+  ################################################################################
+  #
+  #  字体与输入法
+  #
+  ################################################################################
 
-  # Fonts configuration
+  # 字体配置
   fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-cjk-sans
@@ -219,46 +261,28 @@
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
-    wqy_zenhei # WenQuanYi Zen Hei, a popular Chinese font
+    wqy_zenhei
   ];
 
-  # Input method fcitx5
+  # 输入法 (Fcitx5 + Rime)
   i18n.inputMethod = {
     type = "fcitx5";
     enable = true;
     fcitx5.addons = with pkgs; [
       fcitx5-rime
-      fcitx5-gtk # GTK 支持
+      fcitx5-gtk
       kdePackages.fcitx5-qt
       fcitx5-nord
     ];
   };
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  ################################################################################
+  #
+  #  系统状态版本
+  #
+  ################################################################################
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  # ⚠️ 此选项定义了系统状态的兼容性版本，请勿随意更改
+  system.stateVersion = "25.05";
 
 }

@@ -1,24 +1,35 @@
 {
   description = "A simple NixOS flake";
 
+  ################################################################################
+  #
+  #  输入源配置 (Inputs)
+  #
+  #  定义系统依赖的外部 Flake 源，包括 Nixpkgs, Home Manager 等
+  #
+  ################################################################################
   inputs = {
-    # NixOS 官方软件源，这里使用 nixos-25.05 分支
+    # NixOS 官方软件源，锁定在 nixos-25.05 分支
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
 
-    # home-manager, 管理用户配置
+    # Home Manager: 用于管理用户级配置 (Dotfiles, 用户软件)
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
-      # 输入中的 `follows` 关键字用于继承。
-      # 这里，home-manager 的 `inputs.nixpkgs` 与
-      # 当前 flakes 的 `inputs.nixpkgs` 保持一致、
-      # 以避免 nixpkgs 版本不同造成的问题。
+      # 强制 Home Manager 使用与系统一致的 Nixpkgs 版本，避免依赖冲突
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # dae, a proxy application
+    # Daeuniverse: 提供现代化的代理工具 (dae/daed)
     daeuniverse.url = "github:daeuniverse/flake.nix";
   };
 
+  ################################################################################
+  #
+  #  输出配置 (Outputs)
+  #
+  #  定义 NixOS 系统配置入口
+  #
+  ################################################################################
   outputs =
     {
       self,
@@ -29,24 +40,30 @@
     {
       nixosConfigurations.yuki-desktop = nixpkgs.lib.nixosSystem {
         modules = [
-          # 导入 configuration.nix，
+          # ----------------------------------------------------------------------
+          # 主机系统配置
+          # ----------------------------------------------------------------------
           ./hosts/yuki-desktop/default.nix
 
-          # 将 home-manager 配置为 nixos 的一个 module
-          # 这样在 nixos-rebuild switch 时，home-manager 配置也会被自动部署
+          # ----------------------------------------------------------------------
+          # Home Manager 模块集成
+          # ----------------------------------------------------------------------
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
+            # 导入用户 'yuki' 的独立配置文件
             home-manager.users.yuki = import ./home/yuki/default.nix;
 
-            # 使用 home-manager.extraSpecialArgs 自定义传递给 ./home.nix 的参数
-            # 取消注释下面这一行，就可以在 home.nix 中使用 flake 的所有 inputs 参数了
+            # 将 Flake inputs 传递给 Home Manager，以便在 home.nix 中使用
             home-manager.extraSpecialArgs = inputs;
           }
 
-          #inputs.daeuniverse.nixosModules.dae
+          # ----------------------------------------------------------------------
+          # 第三方模块
+          # ----------------------------------------------------------------------
+          # 启用 daed 模块 (带 Web 面板的代理工具)
           inputs.daeuniverse.nixosModules.daed
         ];
       };

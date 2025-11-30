@@ -1,0 +1,77 @@
+global {
+    # 绑定到 LAN 和/或 WAN 接口。将下述接口替换成你自己的接口名。
+    # lan_interface: docker0
+    wan_interface: auto            # 使用 "auto" 自动侦测 WAN 接口。
+    log_level: info
+    allow_insecure: false
+    auto_config_kernel_parameter: true
+    dial_mode: domain++
+}
+
+# 订阅链接已移动到 secrets/dae-subscription.dae
+# 在 Nix 配置中会将两者合并
+
+# 更多的 DNS 样例见 https://github.com/daeuniverse/dae/blob/main/docs/en/configuration/dns.md
+dns {
+    # 优先使用 IPv4 dns
+    ipversion_prefer: 4
+    upstream {
+        alidns: 'udp://223.5.5.5:53'
+        cfdns: 'tcp+udp://1.1.1.1:53'
+        ustcdns: 'udp://202.38.64.56'
+    }
+
+    # DNS 查询规则
+    routing {
+        request {
+            qname(keyword:ustc) -> ustcdns
+            qname(geosite:cn) -> alidns
+    
+            fallback: cfdns
+        }
+    }
+}
+
+group {
+    proxy {
+        #filter: subtag(boostnet) && name(keyword: '香港')
+        policy: min_moving_avg
+    }
+
+    google {
+        filter: subtag(boostnet) && name(keyword: '新加坡')
+        policy: min_moving_avg
+    }
+}
+
+routing {
+    pname(NetworkManager, systemd-resolved, dnsmasq, dropbear) -> must_direct
+    dip(224.0.0.0/3, 'ff00::/8') -> direct
+
+    # DNS 地址，强制直连
+    dip(8.8.8.8) -> must_direct
+    dip(1.1.1.1) -> must_direct
+    dip(223.5.5.5) -> must_direct
+    dip(202.38.64.56) -> must_direct
+
+    ### 以下为自定义规则
+
+    # 必应似乎会被多次代理
+    domain(keyword:bing) -> proxy
+
+    # ustc 走直连
+    domain(keyword:ustc) -> must_direct
+
+    # steam 下载走直连
+    dip(45.121.184.0/24,103.10.124.0/23,103.28.54.0/24,146.66.152.0/24,146.66.155.0/24,153.254.86.0/24,155.133.224.0/22,155.133.230.0/24,155.133.232.0/23,155.133.234.0/24,155.133.236.0/22,155.133.240.0/23,155.133.244.0/23,155.133.246.0/24,155.133.248.0/21,162.254.192.0/21,185.25.182.0/23,190.217.32.0/22,192.69.96.0/22,205.196.6.0/24,208.64.200.0/22,208.78.164.0/22,205.185.194.0/24) -> direct
+    domain(regex:'^(.+\.(cm\.steampowered\.com|steamserver\.net))$') -> direct
+
+    # 谷歌走新加坡
+    domain(keyword:google) -> google
+
+    dip(geoip:private) -> direct
+    dip(geoip:cn) -> direct
+    domain(geosite:cn) -> direct
+
+    fallback: proxy
+}

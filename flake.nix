@@ -46,6 +46,7 @@
             home-manager.extraSpecialArgs = inputs;
           }
 
+          #inputs.daeuniverse.nixosModules.dae
           inputs.daeuniverse.nixosModules.daed
         ];
       };

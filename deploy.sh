@@ -46,11 +46,21 @@ fi
 
 # 检查是否安装了 rsync，推荐使用 rsync 进行同步
 if command -v rsync &> /dev/null; then
-    echo "使用 rsync 同步文件 (排除 .git, result, .direnv)..."
-    # -a: 归档模式 (保留权限等)
+    echo "使用 rsync 同步文件 (排除 .git, result, .direnv, deploy.sh)..."
+    # -a: 归档模式
     # -v: 详细输出
     # --delete: 删除目标目录中源目录不存在的文件 (保持完全一致)
-    sudo rsync -av --exclude='.git' --exclude='result' --exclude='.direnv' --exclude='.github' ./ "$TARGET_DIR/"
+    # --chown=root:root: 强制所有者为 root
+    # --chmod=D755,F644: 设置目录权限 755，文件权限 644
+    sudo rsync -av --delete \
+        --exclude='.git' \
+        --exclude='result' \
+        --exclude='.direnv' \
+        --exclude='.github' \
+        --exclude='deploy.sh' \
+        --chown=root:root \
+        --chmod=D755,F644 \
+        ./ "$TARGET_DIR/"
 else
     echo "⚠️ 未检测到 rsync，使用 cp 复制 (建议安装 rsync 以获得更好体验)..."
     # 复制所有文件
@@ -59,8 +69,12 @@ else
     # 清理不需要的文件
     echo "清理目标目录中的临时文件..."
     [ -L "$TARGET_DIR/result" ] && sudo rm "$TARGET_DIR/result"
-    # 可选：如果不想在 /etc/nixos 中保留 git 历史，取消注释下一行
-    # [ -d "$TARGET_DIR/.git" ] && sudo rm -rf "$TARGET_DIR/.git"
+    [ -f "$TARGET_DIR/deploy.sh" ] && sudo rm "$TARGET_DIR/deploy.sh"
+    
+    # 尝试修复权限
+    echo "修复权限..."
+    sudo chown -R root:root "$TARGET_DIR"
+    sudo chmod -R u=rwX,go=rX "$TARGET_DIR"
 fi
 
 echo "✨ 成功！所有配置文件已更新到 $TARGET_DIR"

@@ -10,6 +10,20 @@
     ./hardware-configuration.nix
   ];
 
+  # Mount Windows drive
+  fileSystems."/mnt/windows" = {
+    device = "/dev/disk/by-uuid/EA9572B0D459FB63";
+    fsType = "ntfs3";
+    options = [
+      "rw"
+      "uid=1000"
+      "gid=100"
+      "dmask=0022"
+      "fmask=0133"
+      "nofail"
+    ];
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   #boot.loader.efi.canTouchEfiVariables = true;
@@ -23,7 +37,7 @@
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
-  #networking.proxy.default = "http://192.168.31.164:2080";
+  #networking.proxy.default = "http://192.168.31.157:2080";
   #networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
@@ -120,6 +134,9 @@
     refind
     nixfmt-rfc-style # Nix 代码格式化工具
 
+    # 透明代理
+    #dae
+
     # 美化
     papirus-icon-theme
 
@@ -129,10 +146,54 @@
     openrgb-with-all-plugins
   ];
 
-  # daed - dae with a web dashboard
+  # Steam 配置
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+  # Link Steam library from Windows drive
+  systemd.tmpfiles.rules = [
+    "d /home/yuki/.local/share/Steam 0755 yuki users -"
+    "d /home/yuki/.local/share/Steam/steamapps 0755 yuki users -"
+    "d /home/yuki/.local/share/Steam/steamapps/common 0755 yuki users -"
+  ];
+
+  #TODO dae 配置问题仍然解决不了，目前推测是因为筛选器的问题 filter，暂时切换回 daed
+  # dae - declarative configuration
+  # 组合并复制 dae 配置文件
+  #environment.etc."dae/config.dae" = {
+  #  text =
+  #    builtins.readFile ../../secrets/dae/dae-subscription.dae
+  #    + "\n"
+  #    + builtins.readFile ./dae/config.dae;
+  #  mode = "0600";
+  #};
+  #environment.etc."dae/boostnet.sub" = {
+  #  text = builtins.readFile ../../secrets/dae/boostnet.txt;
+  #};
+
+  #services.dae = {
+  #  enable = true;
+  #  configFile = "/etc/dae/config.dae";
+  #  openFirewall = {
+  #    enable = true;
+  #    port = 12345;
+  #  };
+
+  #assets = with pkgs; [
+  #  v2ray-geoip
+  #  v2ray-domain-list-community
+  #];
+
+  # alternative of `assets`, a dir contains geo database.
+  #assetsPath = "/etc/dae";
+  #};
+
+  # daed - dae with a web dashboard (Optional: disable if using dae directly)
   services.daed = {
     enable = true;
-
     openFirewall = {
       enable = true;
       port = 12345;
@@ -158,6 +219,7 @@
     mplus-outline-fonts.githubRelease
     dina-font
     proggyfonts
+    wqy_zenhei # WenQuanYi Zen Hei, a popular Chinese font
   ];
 
   # Input method fcitx5

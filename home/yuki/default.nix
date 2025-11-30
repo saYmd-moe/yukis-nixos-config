@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    # 导入通用 Home 配置
+    ../default.nix
+  ];
+
   ################################################################################
   #
   #  基础用户信息
@@ -32,9 +37,8 @@
   #
   ################################################################################
 
-  # Git 版本控制
+  # Git 版本控制 (enable = true 已在 home/default.nix 中设置)
   programs.git = {
-    enable = true;
     userName = "saYmd-moe";
     userEmail = "liuymyz@foxmail.com";
   };

@@ -6,6 +6,8 @@
 
 {
   imports = [
+    # 导入通用主机配置
+    ../default.nix
     # 导入硬件扫描配置
     ./hardware-configuration.nix
   ];
@@ -67,23 +69,10 @@
   #
   ################################################################################
 
-  # 时区设置
-  time.timeZone = "Asia/Shanghai";
-
-  # 语言环境设置
-  i18n.defaultLocale = "zh_CN.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "zh_CN.UTF-8";
-    LC_IDENTIFICATION = "zh_CN.UTF-8";
-    LC_MEASUREMENT = "zh_CN.UTF-8";
-    LC_MONETARY = "zh_CN.UTF-8";
-    LC_NAME = "zh_CN.UTF-8";
-    LC_NUMERIC = "zh_CN.UTF-8";
-    LC_PAPER = "zh_CN.UTF-8";
-    LC_TELEPHONE = "zh_CN.UTF-8";
-    LC_TIME = "zh_CN.UTF-8";
-  };
+  # (已移动到 hosts/default.nix)
+  # time.timeZone = "Asia/Shanghai";
+  # i18n.defaultLocale = "zh_CN.UTF-8";
+  # ...
 
   ################################################################################
   #
@@ -169,27 +158,15 @@
   #
   ################################################################################
 
-  # 允许非自由软件 (Unfree)
-  nixpkgs.config.allowUnfree = true;
+  # (通用设置已移动到 hosts/default.nix)
+  # nixpkgs.config.allowUnfree = true;
+  # nixpkgs.overlays = ...
+  # nix.settings.experimental-features = ...
 
-  # 导入 Overlays
-  nixpkgs.overlays = import ../../overlays;
-
-  # 启用实验性功能 (Flakes)
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
-  # 系统级软件包
+  # 系统级软件包 (仅保留 yuki-desktop 特有的)
   environment.systemPackages = with pkgs; [
-    # --- 核心工具 ---
-    vim
-    wget
-    git
-    fish
+    # --- 核心工具 (vim, wget, git 等已在 default.nix 中) ---
     refind
-    nixfmt-rfc-style # Nix 代码格式化
 
     # --- 美化 ---
     papirus-icon-theme
@@ -200,8 +177,8 @@
     openrgb-with-all-plugins
   ];
 
-  # 默认编辑器
-  environment.variables.EDITOR = "vim";
+  # (已移动到 hosts/default.nix)
+  # environment.variables.EDITOR = "vim";
 
   ################################################################################
   #

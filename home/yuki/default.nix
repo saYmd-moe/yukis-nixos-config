@@ -14,7 +14,6 @@
 
     # 浏览器
     microsoft-edge
-
   ];
 
   # git 相关配置

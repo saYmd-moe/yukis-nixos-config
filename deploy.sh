@@ -25,7 +25,7 @@ else
 fi
 
 echo " [1/2] 正在验证系统构建 (Dry Run)..."
-echo "执行: (cd $BUILD_DIR && nixos-rebuild build --flake .#$FLAKE_NAME)"
+echo "执行: (cd $BUILD_DIR && nixos-rebuild build --flake .#$FLAKE_NAME )"
 
 # 尝试构建系统配置
 # 进入临时目录构建，这样生成的 'result' 链接会被自动清理

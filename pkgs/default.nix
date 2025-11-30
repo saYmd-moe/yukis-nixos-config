@@ -14,6 +14,9 @@
   #
   ################################################################################
 
+  # Cider 3 音乐播放器 (需要手动放置 AppImage 文件)
+  cider3 = pkgs.callPackage ./cider3/package.nix { };
+
   # 示例：
   # my-package = pkgs.callPackage ./my-package { };
   # script-collection = pkgs.callPackage ./scripts { };

@@ -4,9 +4,10 @@
 
 -   **Core**: Flake-based NixOS configuration targeting `nixos-25.05`.
 -   **Entry Point**: `flake.nix` defines inputs (`nixpkgs`, `home-manager`, `daeuniverse`) and the `yuki-desktop` system.
--   **System Config**: `hosts/yuki-desktop/default.nix` manages system-level settings (boot, networking, hardware, desktop environment).
--   **User Config**: `home/yuki/default.nix` manages user-level settings (VS Code, git, browsers) via Home Manager as a NixOS module.
--   **Overlays**: Located in `overlays/`, imported globally in `hosts/yuki-desktop/default.nix`.
+-   **System Config**: `hosts/yuki-desktop/default.nix` is the main entry, importing shared config from `hosts/default.nix`.
+-   **User Config**: `home/yuki/default.nix` manages user settings via Home Manager, integrated as a NixOS module.
+-   **Modules**: Organized in `modules/nixos` (system) and `modules/home-manager` (user). Imported explicitly in host/home configs.
+-   **Custom Packages**: Defined in `pkgs/`, exposed via overlay as `my-pkgs` (e.g., `my-pkgs.cider3`).
 
 ## Critical Workflows
 
@@ -19,30 +20,35 @@
     -   Syncs files to `/etc/nixos` using `rsync` (excluding `.git`, `result`).
 2.  **Apply**:
     ```bash
+    # After syncing to /etc/nixos
+    sudo nixos-rebuild switch
+    # OR apply directly from current directory (for testing)
     sudo nixos-rebuild switch --flake .#yuki-desktop
     ```
 
 ### Package Management
 
--   **System-wide**: Add to `environment.systemPackages` in `hosts/yuki-desktop/default.nix`.
+-   **System-wide**: Add to `environment.systemPackages` in `hosts/yuki-desktop/default.nix` or `hosts/default.nix`.
 -   **User-specific**: Add to `home.packages` in `home/yuki/default.nix`.
--   **VS Code Extensions**: Managed declaratively in `home/yuki/default.nix` under `programs.vscode.profiles.default.extensions`.
+-   **Custom Pkgs**: Use `my-pkgs.<name>` (e.g., `my-pkgs.cider3`). Defined in `pkgs/<name>/package.nix`.
+-   **VS Code**: Managed declaratively in `modules/home-manager/programs/vscode.nix` or `home/yuki/default.nix`.
 
 ## Project-Specific Conventions
 
+-   **Module Imports**: Prefer explicit relative imports for local modules (e.g., `../../modules/nixos/desktop/kde.nix`).
 -   **Proxy/Network**:
-    -   Uses `daed` (with web dashboard) from `daeuniverse` flake input.
-    -   Service defined in `hosts/yuki-desktop/default.nix` (`services.daed`).
-    -   Firewall ports 12345 are opened for it.
+    -   Uses `daed` (daeuniverse) defined in `modules/nixos/services/daed.nix`.
+    -   Service enabled in `hosts/yuki-desktop/default.nix`.
 -   **Hardware**:
-    -   Includes specific support for RGB/Cooling: `openrgb`, `liquidctl`, `coolercontrol`.
     -   Windows drive mounted at `/mnt/windows` (NTFS).
--   **Formatting**: Use `nixfmt` (specifically `nixfmt-rfc-style`).
--   **Secrets**: Stored in `secrets/` (e.g., `secrets/dae/boostnet.txt`), read via `builtins.readFile`.
+    -   Specific hardware modules in `modules/nixos/hardware/`.
+-   **Formatting**: Use `nixfmt-rfc-style`.
+-   **Secrets**: Stored in `secrets/`, read via `builtins.readFile`.
 
 ## Key File Locations
 
--   `flake.nix`: Inputs and outputs definition.
--   `hosts/yuki-desktop/default.nix`: Main system configuration.
--   `home/yuki/default.nix`: Main user configuration.
--   `deploy.sh`: Deployment script.
+-   `flake.nix`: Inputs/Outputs.
+-   `hosts/yuki-desktop/default.nix`: Host-specific system config.
+-   `hosts/default.nix`: Shared system config (locale, core pkgs).
+-   `home/yuki/default.nix`: User config.
+-   `overlays/default.nix`: Overlay entry point (includes `my-pkgs`).

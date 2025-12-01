@@ -4,6 +4,10 @@
   imports = [
     # 导入通用 Home 配置
     ../default.nix
+
+    # 导入模块化 Home Manager 配置
+    ../../modules/home-manager/programs/git.nix
+    ../../modules/home-manager/programs/vscode.nix
   ];
 
   ################################################################################
@@ -39,29 +43,6 @@
   #  开发环境配置
   #
   ################################################################################
-
-  # Git 版本控制 (enable = true 已在 home/default.nix 中设置)
-  programs.git = {
-    userName = "saYmd-moe";
-    userEmail = "liuymyz@foxmail.com";
-  };
-
-  # VS Code 编辑器
-  programs.vscode = {
-    enable = true;
-
-    # 核心扩展 (由 NixOS 声明式管理)
-    profiles.default.extensions = with pkgs.vscode-extensions; [
-      ms-python.python
-      eamodio.gitlens
-      yzhang.markdown-all-in-one
-
-      # Nix 开发支持
-      arrterian.nix-env-selector # 自动选择 Nix 环境
-      jnoortheen.nix-ide
-    ];
-
-  };
 
   ################################################################################
   #

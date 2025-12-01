@@ -26,6 +26,8 @@
   home.packages = with pkgs; [
     # --- 生产力工具 ---
     inkscape
+    zotero
+    obsidian
 
     # --- 通讯与社交 ---
     qq

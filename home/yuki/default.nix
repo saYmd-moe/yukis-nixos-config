@@ -8,6 +8,9 @@
     # 导入模块化 Home Manager 配置
     ../../modules/home-manager/programs/git.nix
     ../../modules/home-manager/programs/vscode.nix
+
+    # 导入字体配置
+    ../../modules/home-manager/desktop/fontconfig.nix
   ];
 
   ################################################################################

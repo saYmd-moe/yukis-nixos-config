@@ -116,20 +116,42 @@ stdenv.mkDerivation rec {
   ];
 
   installPhase = ''
-    runHook preInstall
-    prefix=$out/opt/kingsoft/wps-office
-    mkdir -p $out
-    cp -r opt $out
-    cp -r usr/* $out
-    for i in wps wpp et wpspdf; do
-      substituteInPlace $out/bin/$i \
-        --replace /opt/kingsoft/wps-office $prefix
-    done
-    for i in $out/share/applications/*;do
-      substituteInPlace $i \
-        --replace /usr/bin $out/bin
-    done
-    # need system freetype and gcc lib to run properly
+        runHook preInstall
+        prefix=$out/opt/kingsoft/wps-office
+        mkdir -p $out
+        cp -r opt $out
+        cp -r usr/* $out
+        for i in wps wpp et wpspdf; do
+          substituteInPlace $out/bin/$i \
+            --replace /opt/kingsoft/wps-office $prefix
+        done
+        for i in $out/share/applications/*;do
+          substituteInPlace $i \
+            --replace /usr/bin $out/bin
+        done
+
+    # 只保留 wps-office-prometheus.desktop
+    find $out/share/applications -name "*.desktop" -not -name "wps-office-prometheus.desktop" -delete
+
+    # 修改 wps-office-prometheus.desktop
+    desktopFile="$out/share/applications/wps-office-prometheus.desktop"
+    if [ -f "$desktopFile" ]; then
+      # 1. 修改 Name 为 "WPS"（并移除本地化名称以强制显示 "WPS"）
+      sed -i 's/^Name=.*$/Name=WPS/' "$desktopFile"
+      sed -i '/^Name\[/d' "$desktopFile"
+
+      # 2. 确保 StartupWMClass 绑定到 wps-office2023-kprometheus（之前是 wpsoffice）
+      sed -i 's/^StartupWMClass=.*$/StartupWMClass=wps-office2023-kprometheus/' "$desktopFile"
+
+      # 3. 在 Categories 中添加 "Office"
+      if grep -q "^Categories=" "$desktopFile"; then
+        sed -i 's/^Categories=\(.*\)$/Categories=\1Office;/' "$desktopFile"
+      else
+        echo "Categories=Office;" >> "$desktopFile"
+      fi
+    fi
+
+    # 需要系统的 freetype 和 gcc 库才能正常运行
     for i in wps wpp et wpspdf wpsoffice; do
       wrapProgram $out/opt/kingsoft/wps-office/office6/$i \
         --set LD_PRELOAD "${freetype}/lib/libfreetype.so" \

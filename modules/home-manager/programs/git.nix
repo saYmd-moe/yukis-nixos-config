@@ -7,8 +7,10 @@
   #
   ################################################################################
 
+  programs.git.enable = true;
+
   programs.git.settings = {
-    enable = true;
+    #enable = true;
     user.name = "saYmd-moe";
     user.email = "liuymyz@foxmail.com";
   };

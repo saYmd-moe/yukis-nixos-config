@@ -9,4 +9,4 @@
 
 提示：
 - 将与机器无关的用户设置保留在此处。对于特定于机器的覆盖，请使用 `hosts/<host>/` 提供 extraSpecialArgs。
-- 使用 `home.stateVersion` 锁定 Home Manager 兼容性（此仓库使用 `25.05`）。
+- 使用 `home.stateVersion` 锁定 Home Manager 兼容性（此仓库使用 `25.11`）。

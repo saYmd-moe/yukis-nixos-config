@@ -2,7 +2,7 @@
 
 ## Project Structure & Architecture
 
--   **Core**: Flake-based NixOS configuration targeting `nixos-25.05`.
+-   **Core**: Flake-based NixOS configuration targeting `nixos-25.11`.
 -   **Entry Point**: `flake.nix` defines inputs (`nixpkgs`, `home-manager`, `daeuniverse`) and the `yuki-desktop` system.
 -   **System Config**: `hosts/yuki-desktop/default.nix` is the main entry, importing shared config from `hosts/default.nix`.
 -   **User Config**: `home/yuki/default.nix` manages user settings via Home Manager, integrated as a NixOS module.

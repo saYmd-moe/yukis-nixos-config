@@ -7,9 +7,9 @@
   #
   ################################################################################
 
-  programs.git = {
+  programs.git.settings = {
     enable = true;
-    userName = "saYmd-moe";
-    userEmail = "liuymyz@foxmail.com";
+    user.name = "saYmd-moe";
+    user.email = "liuymyz@foxmail.com";
   };
 }

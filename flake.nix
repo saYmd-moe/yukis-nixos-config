@@ -9,12 +9,12 @@
   #
   ################################################################################
   inputs = {
-    # NixOS 官方软件源，锁定在 nixos-25.05 分支
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+    # NixOS 官方软件源，锁定在 nixos-25.11 分支
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     # Home Manager: 用于管理用户级配置 (Dotfiles, 用户软件)
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       # 强制 Home Manager 使用与系统一致的 Nixpkgs 版本，避免依赖冲突
       inputs.nixpkgs.follows = "nixpkgs";
     };

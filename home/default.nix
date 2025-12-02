@@ -10,7 +10,7 @@
   ################################################################################
 
   # 启用 Git
-  programs.git.enable = true;
+  #programs.git.enable = true;
 
   # 使用英文 xdg-user-dirs
   xdg.userDirs = {

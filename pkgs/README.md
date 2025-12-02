@@ -7,7 +7,7 @@
 ### 1. WPS Office 365 教育版 (`wps365-edu`)
 参考  Beriholic/nix-wpsoffice-cn
 - **路径**: `pkgs/wps365-edu/package.nix`
-- **描述**: WPS Office 365 教育版，包含防盗链下载逻辑和自动补丁。
+- **描述**: WPS Office 365 教育版
 - **特性**:
   - 自动集成中文字体包 (`chinese-fonts.nix`)。
   - 修复了 `.desktop` 文件以正确显示名称 "WPS" 和图标。

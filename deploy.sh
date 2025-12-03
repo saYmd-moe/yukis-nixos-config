@@ -1,8 +1,51 @@
 #!/usr/bin/env bash
 set -e
 
-# 定义 Flake 目标 (根据当前目录的 flake.nix)
-FLAKE_NAME="yuki-desktop"
+# 获取 hosts 目录下的所有子目录作为可用主机
+mapfile -t AVAILABLE_HOSTS < <(find hosts -maxdepth 1 -mindepth 1 -type d -printf '%f\n')
+
+if [ ${#AVAILABLE_HOSTS[@]} -eq 0 ]; then
+    echo "❌ 错误: hosts/ 目录下没有找到任何主机配置。"
+    exit 1
+fi
+
+# 确定 FLAKE_NAME
+if [ -n "$1" ]; then
+    FLAKE_NAME="$1"
+    # 验证指定的主机是否存在
+    HOST_EXISTS=false
+    for host in "${AVAILABLE_HOSTS[@]}"; do
+        if [[ "$host" == "$FLAKE_NAME" ]]; then
+            HOST_EXISTS=true
+            break
+        fi
+    done
+
+    if [[ "$HOST_EXISTS" == "false" ]]; then
+        echo "❌ 错误: 主机配置 '$FLAKE_NAME' 不存在。"
+        echo "可用主机: ${AVAILABLE_HOSTS[*]}"
+        exit 1
+    fi
+else
+    if [ ${#AVAILABLE_HOSTS[@]} -eq 1 ]; then
+        FLAKE_NAME="${AVAILABLE_HOSTS[0]}"
+        echo "ℹ️ 未指定主机，自动选择唯一可用配置: $FLAKE_NAME"
+    else
+        echo "请选择要部署的主机配置:"
+        PS3="请输入数字选择: "
+        select host in "${AVAILABLE_HOSTS[@]}"; do
+            if [ -n "$host" ]; then
+                FLAKE_NAME="$host"
+                break
+            else
+                echo "❌ 无效的选择，请重试。"
+            fi
+        done
+    fi
+fi
+
+echo "🚀 目标主机: $FLAKE_NAME"
+
 TARGET_DIR="/etc/nixos"
 # 创建临时目录用于验证构建
 BUILD_DIR=$(mktemp -d)
@@ -13,7 +56,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "� 准备构建环境..."
+echo "🫡 准备构建中..."
 # 将当前目录复制到临时目录，排除 .git 目录
 # 这样做是为了绕过 Nix Flakes 在 Git 仓库中只读取已暂存(staged)文件的限制
 # 确保验证的是当前工作区中实际的文件内容
@@ -77,5 +120,8 @@ else
     sudo chmod -R u=rwX,go=rX "$TARGET_DIR"
 fi
 
-echo "✨ 成功！所有配置文件已更新到 $TARGET_DIR"
-echo "💡 你现在可以运行 'sudo nixos-rebuild switch' 来应用更改。"
+echo "✨ 配置验证成功！文件已更新到 $TARGET_DIR"
+echo "🔨 将 NixOS 系统重建以应用新配置..."
+
+# 重建 NixOS 系统以应用新配置
+sudo nixos-rebuild switch --flake ".#$FLAKE_NAME"

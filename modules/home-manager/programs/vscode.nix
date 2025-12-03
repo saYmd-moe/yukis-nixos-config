@@ -16,6 +16,8 @@
       eamodio.gitlens
       yzhang.markdown-all-in-one
 
+      mkhl.direnv # Direnv 支持
+
       # Nix 开发支持
       arrterian.nix-env-selector # 自动选择 Nix 环境
       jnoortheen.nix-ide

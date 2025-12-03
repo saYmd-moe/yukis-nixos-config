@@ -55,6 +55,7 @@
     git
     fish
     nixfmt-rfc-style
+    direnv
   ];
 
   # 默认编辑器

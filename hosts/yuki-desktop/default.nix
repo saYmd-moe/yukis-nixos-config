@@ -118,11 +118,9 @@
 
   # 系统级软件包 (仅保留 yuki-desktop 特有的)
   environment.systemPackages = with pkgs; [
-    # --- 核心工具 (vim, wget, git 等已在 default.nix 中) ---
+    # 核心工具 (vim, wget, git 等已在 default.nix 中) ---
     refind
 
-    # --- 美化 ---
-    papirus-icon-theme
   ];
 
   ################################################################################

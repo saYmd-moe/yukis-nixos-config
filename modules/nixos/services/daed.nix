@@ -1,7 +1,16 @@
 # Imported by: hosts/yuki-desktop/default.nix
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
+  imports = [
+    inputs.daeuniverse.nixosModules.daed
+  ];
+
   ################################################################################
   #
   #  网络代理 (Daed)

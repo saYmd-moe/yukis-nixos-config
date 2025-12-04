@@ -31,7 +31,6 @@
     ../../modules/nixos/desktop/niri/niri.nix
 
     # 系统服务
-    inputs.daeuniverse.nixosModules.daed
     ../../modules/nixos/services/daed.nix
     ../../modules/nixos/services/steam.nix
 

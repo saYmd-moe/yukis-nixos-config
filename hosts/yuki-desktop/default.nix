@@ -24,11 +24,10 @@
     ../../modules/nixos/hardware/peripherals.nix
 
     # 桌面环境
-    ../../modules/nixos/desktop/kde.nix
+    #../../modules/nixos/desktop/kde.nix
+    ../../modules/nixos/desktop/greetd.nix
     ../../modules/nixos/desktop/fonts.nix
     ../../modules/nixos/desktop/input-method/fcitx5.nix
-    # niri
-    ../../modules/nixos/desktop/niri/niri.nix
 
     # 系统服务
     ../../modules/nixos/services/daed.nix

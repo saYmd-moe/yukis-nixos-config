@@ -22,8 +22,8 @@
     enable = true;
 
     niri = {
-      enableKeybinds = true; # Automatic keybinding configuration
-      enableSpawn = true; # Auto-start DMS with niri
+      enableKeybinds = false; # 手动调整键绑定以避免冲突
+      enableSpawn = false; # Auto-start DMS with niri
     };
 
     # Core features

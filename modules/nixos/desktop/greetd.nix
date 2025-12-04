@@ -19,6 +19,9 @@
 
     #TODO 根据实际用户名修改
     configHome = "/home/yuki";
+    configFiles = [
+      "/home/yuki/.config/DankMaterialShell/settings.json"
+    ];
 
     # Save the logs to a file
     logs = {

@@ -53,9 +53,10 @@
     # --- 多媒体 ---
     my-pkgs.cider3
 
-    # --- 美化 ---
-    papirus-icon-theme
-    catppuccin-cursors
+    # --- 开发工具 ---
+    ghostty
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
 
   ];
 

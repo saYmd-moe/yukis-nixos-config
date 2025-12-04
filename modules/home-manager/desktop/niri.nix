@@ -5,15 +5,14 @@
 }:
 
 {
-
   programs.niri.settings = {
     # 环境变量
     environment = {
       "NIXOS_OZONE_WL" = "1";
 
       # 设置 Qt 平台主题为 qt6ct
-      QT_QPA_PLATFORMTHEME = "qt6ct";
-      QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+      QT_QPA_PLATFORMTHEME = "gtk";
+      QT_QPA_PLATFORMTHEME_QT6 = "gtk";
 
       # 设置语言为中文 UTF-8
       LANG = "zh_CN.UTF-8";
@@ -52,37 +51,99 @@
     };
 
     # 显示器配置
-    outputs = { };
+    outputs = {
+      "DP-2" = {
+        mode = {
+          height = 1440;
+          width = 2560;
+          refresh = 100.0;
+        };
+        scale = 1.3;
+      };
+    };
 
     # 自动运行的程序
-    spawn-at-startup = [ ];
+    spawn-at-startup = [
+    ];
 
     # 布局配置
+    # 包含布局和颜色配置文件，由 dms 提供（includes 目前还没有被 merge）
+    #includes = lib.mkMerge [
+    #  [ "~/.config/niri/dms/layout.kdl" ]
+    #];
     layout = {
       gaps = 4;
 
-      border = {
-        enable = true;
-        width = 2;
-      };
-
       focus-ring = {
-        enable = true;
-        width = 4;
+        width = 2;
+        active = {
+          color = "#d8bafa";
+        };
+        inactive = {
+          color = "#958e98";
+        };
+        urgent = {
+          color = "#ffb4ab";
+        };
       };
 
+      border = {
+        width = 2;
+        active = {
+          color = "#d8bafa";
+        };
+        inactive = {
+          color = "#958e98";
+        };
+        urgent = {
+          color = "#ffb4ab";
+        };
+      };
+
+      shadow = {
+        color = {
+          color = "#00000070";
+        };
+      };
+
+      tab-indicator = {
+        active = {
+          color = "#d8bafa";
+        };
+        inactive = {
+          color = "#958e98";
+        };
+        urgent = {
+          color = "#ffb4ab";
+        };
+      };
+
+      insert-hint = {
+        display = {
+          color = "#d8bafa80";
+        };
+      };
     };
 
     # 光标主题
     cursor = {
       hide-after-inactive-ms = 2000;
       hide-when-typing = true;
-      theme = "Catppuccin-Mocha-Mauve-Cursors";
+      theme = "Catppuccin-MochaMauve-Cursor";
     };
 
     # 窗口管理器配置
 
     window-rules = [
+      {
+        geometry-corner-radius = {
+          top-left = 12.0;
+          top-right = 12.0;
+          bottom-left = 12.0;
+          bottom-right = 12.0;
+        };
+        clip-to-geometry = true;
+      }
       # QQ
       {
         matches = [
@@ -199,7 +260,7 @@
         action.spawn = "ghostty";
         hotkey-overlay.title = "打开终端: ghostty";
       };
-      "Mod+B".action.spawn = "microsoft-edge-stable";
+      "Mod+B".action.spawn = "microsoft-edge";
       "Mod+E".action.spawn = "dolphin";
       "Super+Alt+L" = {
         action.spawn = [

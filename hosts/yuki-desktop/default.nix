@@ -27,6 +27,8 @@
     ../../modules/nixos/desktop/kde.nix
     ../../modules/nixos/desktop/fonts.nix
     ../../modules/nixos/desktop/input-method/fcitx5.nix
+    # niri
+    ../../modules/nixos/desktop/niri/niri.nix
 
     # 系统服务
     inputs.daeuniverse.nixosModules.daed

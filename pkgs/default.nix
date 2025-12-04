@@ -1,3 +1,4 @@
+# Imported by: overlays/default.nix
 # 自定义软件包集合
 #
 # 这个文件用于定义或导入自定义的软件包

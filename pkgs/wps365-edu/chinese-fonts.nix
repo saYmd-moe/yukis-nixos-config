@@ -1,3 +1,4 @@
+# Imported by: pkgs/default.nix
 {
   lib,
   stdenv,

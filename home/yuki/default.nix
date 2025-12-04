@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+# Imported by: flake.nix
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -11,7 +17,13 @@
 
     # 导入字体配置
     ../../modules/home-manager/desktop/fontconfig.nix
-  ];
+
+    # 导入桌面配置
+    inputs.niri.homeModules.niri
+    inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+    inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
+    ../../modules/home-manager/desktop/dmshell.nix
+  ];  
 
   ################################################################################
   #

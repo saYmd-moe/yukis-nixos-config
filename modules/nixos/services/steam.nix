@@ -1,3 +1,4 @@
+# Imported by: hosts/yuki-desktop/default.nix
 { config, pkgs, ... }:
 
 {

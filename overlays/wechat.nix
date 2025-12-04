@@ -1,3 +1,4 @@
+# Imported by: overlays/default.nix
 final: prev: {
   wechat = prev.symlinkJoin {
     name = "wechat";

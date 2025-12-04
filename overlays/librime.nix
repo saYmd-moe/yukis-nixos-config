@@ -1,3 +1,4 @@
+# Imported by: overlays/default.nix
 final: prev: {
   librime =
     (prev.librime.override {

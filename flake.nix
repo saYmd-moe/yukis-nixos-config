@@ -21,6 +21,21 @@
 
     # Daeuniverse: 提供现代化的代理工具 (dae/daed)
     daeuniverse.url = "github:daeuniverse/flake.nix";
+
+    # DankMaterialShell & Niri
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.dgop.follows = "dgop";
+    };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   ################################################################################
@@ -58,7 +73,7 @@
             home-manager.users.yuki = import ./home/yuki/default.nix;
 
             # 将 Flake inputs 传递给 Home Manager，以便在 home.nix 中使用
-            home-manager.extraSpecialArgs = inputs;
+            home-manager.extraSpecialArgs = { inherit inputs; }; # 这里的关键修复
           }
         ];
       };

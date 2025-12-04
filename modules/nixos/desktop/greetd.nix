@@ -12,6 +12,7 @@
   ];
 
   programs.dankMaterialShell.greeter = {
+    enable = true;
     compositor = {
       name = "niri"; # Required. Can be also "hyprland" or "sway"
     };

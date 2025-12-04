@@ -1,4 +1,3 @@
-# Imported by: home/yuki/default.nix
 {
   pkgs,
   inputs,

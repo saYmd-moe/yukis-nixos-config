@@ -26,6 +26,12 @@
   # 导入全局 Overlays
   nixpkgs.overlays = import ../overlays;
 
+  # Home Manager XDG Portal 集成
+  environment.pathsToLink = [
+    "/share/applications"
+    "/share/xdg-desktop-portal"
+  ];
+
   # ------------------------------------------------------------------------------
   # 本地化与时区
   # ------------------------------------------------------------------------------

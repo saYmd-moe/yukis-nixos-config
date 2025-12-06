@@ -14,6 +14,9 @@
   # 微信相关覆盖
   (import ./wechat.nix)
 
+  # Steam 相关覆盖
+  (import ./steam.nix)
+
   # 导入自定义软件包 (pkgs/default.nix)
   (final: prev: {
     my-pkgs = import ../pkgs/default.nix { pkgs = final; };

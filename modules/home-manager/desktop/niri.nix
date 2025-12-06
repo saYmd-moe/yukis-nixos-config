@@ -11,8 +11,8 @@
       "NIXOS_OZONE_WL" = "1";
 
       # 设置 Qt 平台主题为 qt6ct
-      QT_QPA_PLATFORMTHEME = "gtk";
-      QT_QPA_PLATFORMTHEME_QT6 = "gtk";
+      QT_QPA_PLATFORMTHEME = "qt6ct";
+      QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
 
       # 设置语言为中文 UTF-8
       LANG = "zh_CN.UTF-8";

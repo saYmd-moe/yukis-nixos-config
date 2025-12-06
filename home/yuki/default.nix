@@ -58,6 +58,9 @@
     kdePackages.dolphin
     kdePackages.dolphin-plugins
 
+    # --- 系统配置 ---
+    kdePackages.qt6ct
+
   ];
 
   ################################################################################

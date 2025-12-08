@@ -21,6 +21,11 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
+  # 蓝牙支持
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
   # 相关硬件工具包
   environment.systemPackages = with pkgs; [
     lm_sensors

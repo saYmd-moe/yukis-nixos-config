@@ -68,7 +68,13 @@
 
     # 自动运行的程序
     spawn-at-startup = [
-      { command = [ "udiskie" ]; }
+      {
+        command = [
+          "env"
+          "LC_ALL=C"
+          "udiskie"
+        ];
+      }
     ];
 
     # 布局配置

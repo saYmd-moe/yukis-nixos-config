@@ -18,7 +18,6 @@
 
     # --- 美化 ---
     papirus-icon-theme
-    catppuccin-cursors.mochaMauve
     adw-gtk3
     adwaita-qt
 

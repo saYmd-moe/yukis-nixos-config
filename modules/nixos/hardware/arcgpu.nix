@@ -16,11 +16,15 @@
       # Required for modern Intel GPUs (Xe iGPU and ARC)
       intel-media-driver # VA-API (iHD) userspace
       vpl-gpu-rt # oneVPL (QSV) runtime
+      mesa
 
       # Optional (compute / tooling):
-      #intel-compute-runtime # OpenCL (NEO) + Level Zero for Arc/Xe
+      intel-compute-runtime # OpenCL (NEO) + Level Zero for Arc/Xe
       # NOTE: 'intel-ocl' also exists as a legacy package; not recommended for Arc/Xe.
       # libvdpau-va-gl       # Only if you must run VDPAU-only apps
+    ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      mesa
     ];
   };
 

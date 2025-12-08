@@ -484,6 +484,7 @@
       "Mod+W".action.toggle-column-tabbed-display = [ ];
 
       "Print".action.screenshot = [ ];
+      "Mod+Shift+S".action.screenshot = [ ];
       "Ctrl+Print".action.screenshot-screen = [ ];
       "Alt+Print".action.screenshot-window = [ ];
 

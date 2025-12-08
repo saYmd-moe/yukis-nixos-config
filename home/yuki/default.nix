@@ -65,8 +65,13 @@
     kdePackages.dolphin
     kdePackages.dolphin-plugins
 
-    # --- 视频工具 ---
+    # --- 美化 ---
+    catppuccin-cursors.mochaMauve
 
+    # --- wine ---
+    wineWowPackages.waylandFull
+    winetricks
+    bottles
   ];
 
   ################################################################################

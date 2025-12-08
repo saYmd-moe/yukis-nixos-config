@@ -47,7 +47,11 @@
       };
 
       # 鼠标设置
-      mouse = { };
+      mouse = {
+        enable = true;
+        accel-profile = "flat";
+        accel-speed = 0.25;
+      };
     };
 
     # 显示器配置

@@ -19,8 +19,8 @@
     ../../modules/home-manager/desktop/fontconfig.nix
 
     # 导入桌面环境配置
-    ../../modules/home-manager/desktop/niri.nix
-    ../../modules/home-manager/desktop/dmshell.nix
+    ../../modules/home-manager/desktop/niri-with-dms/niri.nix
+    ../../modules/home-manager/desktop/niri-with-dms/dmshell.nix
   ];
 
   ################################################################################

@@ -24,7 +24,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # 导入全局 Overlays
-  nixpkgs.overlays = import ../overlays;
+  nixpkgs.overlays = import ../overlays/default.nix;
 
   # Home Manager XDG Portal 集成
   environment.pathsToLink = [

@@ -25,7 +25,8 @@
 
     # 桌面环境
     #../../modules/nixos/desktop/kde.nix
-    ../../modules/nixos/desktop/niri.nix
+    ../../modules/nixos/desktop/niri-with-dms/dmshell.nix
+    ../../modules/nixos/desktop/niri-with-dms/niri.nix
     ../../modules/nixos/desktop/greetd.nix
     ../../modules/nixos/desktop/fonts.nix
     ../../modules/nixos/desktop/input-method/fcitx5.nix

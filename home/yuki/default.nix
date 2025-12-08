@@ -14,6 +14,7 @@
     # 导入模块化 Home Manager 配置
     ../../modules/home-manager/programs/git.nix
     ../../modules/home-manager/programs/vscode.nix
+    ../../modules/home-manager/programs/obs-studio.nix
 
     # 导入字体配置
     ../../modules/home-manager/desktop/fontconfig.nix
@@ -55,20 +56,22 @@
 
     # --- 开发工具 ---
     ghostty
-    kdePackages.dolphin
-    kdePackages.dolphin-plugins
 
     # --- 系统配置 ---
     kdePackages.qt6ct
 
     # --- 基本工具 ---
     nautilus
+    kdePackages.dolphin
+    kdePackages.dolphin-plugins
+
+    # --- 视频工具 ---
 
   ];
 
   ################################################################################
   #
-  #  开发环境配置
+  #  部分软件配置
   #
   ################################################################################
 

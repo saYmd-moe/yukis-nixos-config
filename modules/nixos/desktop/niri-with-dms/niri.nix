@@ -21,6 +21,9 @@
     catppuccin-cursors.mochaMauve
     adw-gtk3
     adwaita-qt
+
+    # --- Niri 依赖 ---
+    mako
   ];
 
   programs.niri = {

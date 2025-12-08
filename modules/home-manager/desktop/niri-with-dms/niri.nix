@@ -68,6 +68,7 @@
 
     # 自动运行的程序
     spawn-at-startup = [
+      { command = [ "udiskie" ]; }
     ];
 
     # 布局配置

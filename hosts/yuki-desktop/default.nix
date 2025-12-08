@@ -57,6 +57,20 @@
     ];
   };
 
+  # 挂载机械硬盘数据分区
+  fileSystems."/mnt/data" = {
+    device = "/dev/disk/by-uuid/AC7D83CF86F90092";
+    fsType = "ntfs3";
+    options = [
+      "rw"
+      "uid=1000"
+      "gid=100"
+      "umask=000"
+      "windows_names"
+      "nofail"
+    ];
+  };
+
   ################################################################################
   #
   #  系统引导与内核

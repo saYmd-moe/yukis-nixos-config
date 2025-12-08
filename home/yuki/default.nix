@@ -58,6 +58,7 @@
     ghostty
 
     # --- 系统配置 ---
+    udiskie # 自动挂载工具
     kdePackages.qt6ct
 
     # --- 基本工具 ---
